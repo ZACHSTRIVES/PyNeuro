@@ -14,8 +14,8 @@ class PyNeuro:
     After initialising , if required the callbacks must be set
     then using the start method the library will start fetching data from mindwave
     i.e. object1.start()
-    similarly stop method can be called to stop fetching the data
-    i.e. object1.stop()
+    similarly close method can be called to stop fetching the data
+    i.e. object1.close()
 
     requirements:Telnet
 
