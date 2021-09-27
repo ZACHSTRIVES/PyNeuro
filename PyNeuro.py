@@ -72,6 +72,14 @@ class PyNeuro:
         self.__threadRun = True
         self.__parserThread.start()
 
+    def close(self):
+        """
+        Close Service.
+        :return:
+        """
+        self.__threadRun = False
+        self.__parserThread.join()
+
     def __packetParser(self):
         while True:
             line = self.__telnet.read_until(b'\r');
@@ -89,16 +97,13 @@ class PyNeuro:
                         if "eSense" in data.keys():
                             if data["eSense"]["attention"] + data["eSense"]["meditation"] == 0:
                                 self.__status = "fitting"
-                                print("[PyNeuro] Fitting device..")
                             else:
                                 self.__status = "connected"
-                                print("[PyNeuro]", data['eSense'])
                                 self.attention = data["eSense"]["attention"]
                                 self.meditation = data["eSense"]["meditation"]
                                 self.__attention_records.append(data["eSense"]["attention"])
                                 self.__attention_records.append(data["eSense"]["meditation"])
                         elif "blinkStrength" in data.keys():
-                            print("[PyNeuro]", data)
                             self.blinkStrength = data["blinkStrength"]
                             self.__blinkStrength_records.append(data["blinkStrength"])
                 except:
