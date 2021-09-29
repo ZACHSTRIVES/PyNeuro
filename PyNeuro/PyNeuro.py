@@ -1,7 +1,7 @@
 """
 @Author Zach Wang
 @Date 2021.9.27
-@Version 1.0.0
+@Version 1.1.0
 """
 import json
 from telnetlib import Telnet
@@ -24,7 +24,7 @@ class PyNeuro:
     __attention = 0
     __meditation = 0
     __blinkStrength = 0
-    __status = "Scanning"
+    __status = "NotConnected"
 
     __attention_records = []
     __meditation_records = []
@@ -36,6 +36,7 @@ class PyNeuro:
     __attention_callbacks = []
     __meditation_callbacks = []
     __blinkStrength__callbacks = []
+    __status__callbacks = []
 
     callBacksDictionary = {}  # keep a track of all callbacks
 
@@ -88,16 +89,19 @@ class PyNeuro:
                     raw_str = (str(line).rstrip("\\r'").lstrip("b'"))
                     data = json.loads(raw_str)
                     if "status" in data.keys():
-                        self.__status = data["status"]
-                        if data["status"] == "scanning":
-                            print("[PyNeuro] Scanning device..")
-                        else:
-                            print("[PyNeuro] Connection lost, trying to reconnect..")
+                        if self.__status != data["status"]:
+                            self.__status = data["status"]
+                            if data["status"] == "scanning":
+                                print("[PyNeuro] Scanning device..")
+                            else:
+                                print("[PyNeuro] Connection lost, trying to reconnect..")
                     else:
                         if "eSense" in data.keys():
                             if data["eSense"]["attention"] + data["eSense"]["meditation"] == 0:
                                 self.__status = "fitting"
+
                             else:
+
                                 self.__status = "connected"
                                 self.attention = data["eSense"]["attention"]
                                 self.meditation = data["eSense"]["meditation"]
@@ -131,7 +135,7 @@ class PyNeuro:
         :param callback: function(blinkStrength: int)
         """
 
-        self.__blinkStrength_callbacks.append(callback)
+        self.__blinkStrength__callbacks.append(callback)
 
     # attention
     @property
@@ -171,6 +175,18 @@ class PyNeuro:
     def blinkStrength(self, value):
         self.__blinkStrength = value
         # if callback has been set, execute the function
-        if len(self.__blinkStrength__callbacks) != 0:
-            for callback in self.__blinkStrength__callbacks:
-                callback(self.__blinkStrengthn)
+        for callback in self.__blinkStrength__callbacks:
+            callback(self.__blinkStrength)
+
+    # status
+    @property
+    def status(self):
+        "Get status"
+        return self.__status
+
+    @status.setter
+    def status(self, value):
+        self.__status = value
+        for callback in self.__status__callbacks:
+            callback(self.__status)
+
