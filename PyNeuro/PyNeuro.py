@@ -1,7 +1,7 @@
 """
 @Author Zach Wang
 @Date 2021.9.27
-@Version 1.1.0
+@Version 1.2.1
 """
 import json
 from telnetlib import Telnet
@@ -26,6 +26,9 @@ class PyNeuro:
     __blinkStrength = 0
     __status = "NotConnected"
 
+    __delta = 0
+    __theta = 0
+
     __attention_records = []
     __meditation_records = []
     __blinkStrength_records = []
@@ -36,6 +39,8 @@ class PyNeuro:
     __attention_callbacks = []
     __meditation_callbacks = []
     __blinkStrength__callbacks = []
+    __delta__callbacks = []
+    __theta__callbacks = []
     __status__callbacks = []
 
     callBacksDictionary = {}  # keep a track of all callbacks
@@ -79,7 +84,6 @@ class PyNeuro:
         :return:
         """
         self.__threadRun = False
-        self.__parserThread.join()
 
     def __packetParser(self):
         while True:
@@ -98,13 +102,18 @@ class PyNeuro:
                     else:
                         if "eSense" in data.keys():
                             if data["eSense"]["attention"] + data["eSense"]["meditation"] == 0:
-                                self.__status = "fitting"
+                                if self.__status != "fitting":
+                                    self.__status = "fitting"
+                                    print("[PyNeuro] Fitting Device..")
 
                             else:
-
-                                self.__status = "connected"
+                                if self.__status != "connected":
+                                    self.__status = "connected"
+                                    print("[PyNeuro] Successfully Connected ..")
                                 self.attention = data["eSense"]["attention"]
                                 self.meditation = data["eSense"]["meditation"]
+                                self.theta = data['eegPower']['theta']
+                                self.delta = data['eegPower']['delta']
                                 self.__attention_records.append(data["eSense"]["attention"])
                                 self.__attention_records.append(data["eSense"]["meditation"])
                         elif "blinkStrength" in data.keys():
@@ -136,6 +145,22 @@ class PyNeuro:
         """
 
         self.__blinkStrength__callbacks.append(callback)
+
+    def set_delta_callback(self, callback):
+        """
+        Set callback function of meditation value
+        :param callback: function(blinkStrength: int)
+        """
+
+        self.__delta__callbacks.append(callback)
+
+    def set_theta_callback(self, callback):
+        """
+        Set callback function of meditation value
+        :param callback: function(blinkStrength: int)
+        """
+
+        self.__theta__callbacks.append(callback)
 
     # attention
     @property
@@ -178,6 +203,38 @@ class PyNeuro:
         for callback in self.__blinkStrength__callbacks:
             callback(self.__blinkStrength)
 
+    @property
+    def delta(self):
+        "Get value for delta"
+        return self.__delta
+
+    @delta.setter
+    def delta(self, value):
+        self.__delta = value
+        # if callback has been set, execute the function
+        for callback in self.__delta__callbacks:
+            callback(self.__delta)
+
+    @property
+    def theta(self):
+        "Get value for theta"
+        return self.__theta
+    @theta.setter
+    def theta(self,value):
+        self.__theta = value
+        # if callback has been set, execute the function
+        for callback in self.__theta__callbacks:
+            callback(self.__theta)
+
+
+    @delta.setter
+    def delta(self, value):
+        self.__delta = value
+        # if callback has been set, execute the function
+        for callback in self.__delta__callbacks:
+            callback(self.__delta)
+
+
     # status
     @property
     def status(self):
@@ -189,4 +246,3 @@ class PyNeuro:
         self.__status = value
         for callback in self.__status__callbacks:
             callback(self.__status)
-

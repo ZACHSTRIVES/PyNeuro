@@ -9,7 +9,7 @@ Run the following command: `pip install PyNeuro`
 
 ## Usage
 
-1. Importing the module: `from NeuroPy import NeuroPy`
+1. Importing the module: `from PyNeuro.PyNeuro import PyNeuro`
 2. Initializing: `pn = PyNeuro()`
 3. After initializing, if required the callbacks can be set
 4. Then call `pn.connect()` method, it will connect with TCP Socket server.
@@ -19,7 +19,7 @@ Run the following command: `pip install PyNeuro`
 ### Obtaining Data from Device 
 
 * **Obtaining value:** `attention = pn.attention` \#to get value of attention_
-    >**Other Variable** attention, meditation, blinkStrength, will be added more soon.
+    >**Other Variable** attention, meditation, blinkStrength, delta, theta will be added more soon.
 
 * **Setting callback:** A call back can be associated with all the above variables so that a function is called when the variable is updated. Syntax: 
 
@@ -27,6 +27,8 @@ Run the following command: `pip install PyNeuro`
     pn.set_attention_callback(callback_function1)
     pn.set_meditation_callback(callback_function2)
     pn.set_blinkStrength_callback(callback_function3)
+    pn.set_delta_callback(callback_function4)
+    pn.set_theta_callback(callback_function5)
     ``` 
    >You can add any number of callback functions to a variable..
   
@@ -34,7 +36,7 @@ Run the following command: `pip install PyNeuro`
 ## Sample Program 1 (Access via callback)
 
 ```python
-from PyNeuro import PyNeuro
+from PyNeuro.PyNeuro import PyNeuro
 from time import sleep
 
 pn = PyNeuro() 
@@ -59,7 +61,7 @@ finally:
 ## Sample Program 2 (Access via object)
 
 ```python
-from PyNeuro import PyNeuro
+from PyNeuro.PyNeuro import PyNeuro
 from time import sleep
 
 pn = PyNeuro() 
