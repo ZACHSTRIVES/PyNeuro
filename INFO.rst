@@ -42,7 +42,7 @@ Obtaining Data from Device
 
        You can add any number of callback functions to a variable..
 
-Sample Program 1 (Access via callback)
+Access via callback
 --------------------------------------
 
 .. code:: python
@@ -61,13 +61,9 @@ Sample Program 1 (Access via callback)
     pn.connect()
     pn.start()
 
-    try:
-        while True:
-            sleep(0.2)
-    finally:
-        neuropy.close()
 
-Sample Program 2 (Access via object)
+
+Access via object
 ------------------------------------
 
 .. code:: python

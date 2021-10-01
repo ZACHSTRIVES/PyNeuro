@@ -16,10 +16,10 @@ Run the following command: `pip install PyNeuro`
 6. Then call `pn.start()` method, it will be start fetching data.
 7. To stop call `pn.close()`
 
-### Obtaining Data from Device 
+### Obtaining Data from Mindware Mobile Headset
 
 * **Obtaining value:** `attention = pn.attention` \#to get value of attention_
-    >**Other Variable** attention, meditation, blinkStrength, delta, , lowAlpha, highAlpha, lowBeta, highBeta, lowGamma, highGamma.
+    >**Other Variables** attention, meditation, blinkStrength, delta, lowAlpha, highAlpha, lowBeta, highBeta, lowGamma, highGamma.
 
 * **Setting callback:** A call back can be associated with all the above variables so that a function is called when the variable is updated. Syntax: 
 
@@ -35,7 +35,7 @@ Run the following command: `pip install PyNeuro`
    >You can add any number of callback functions to a variable..
   
 
-## Sample Program 1 (Access via callback)
+## Access data via callback
 
 ```python
 from PyNeuro.PyNeuro import PyNeuro
@@ -43,24 +43,18 @@ from time import sleep
 
 pn = PyNeuro() 
 
-def attention_callback(attention_value):
-    """this function will be called everytime NeuroPy has a new value for attention"""
-    print ("Value of attention is: ", attention_value)
-    return None
+def attention_callback(value):
+    """this function will be called everytime PyNeuro has a new value for attention"""
+    print ("attention: ", value)
 
 pn.set_attention_callback("attention", attention_callback)
 pn.connect()
 pn.start()
 
-try:
-    while True:
-        sleep(0.2)
-finally:
-    neuropy.close()
 ```
 
 
-## Sample Program 2 (Access via object)
+## Access data via object
 
 ```python
 from PyNeuro.PyNeuro import PyNeuro
@@ -70,7 +64,7 @@ pn = PyNeuro()
 pn.start()
 
 while True:
-    if pn.meditation > 70: # Access data through object
+    if pn.theta > 70: # Access data through object
         pn.close() 
     sleep(0.2) 
 ```
