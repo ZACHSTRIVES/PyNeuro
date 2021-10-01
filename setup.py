@@ -3,7 +3,7 @@ from setuptools import setup
 
 
 setup(name="PyNeuro",
-      version="1.2.1",
+      version="1.3.0",
       description="Library for connect with Neurosky's Mindwave EEG headset via TCP Socket",
       author="Zach Wang",
       author_email="wangziqi0325@gmail.com",
